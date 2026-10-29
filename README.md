@@ -1,4 +1,4 @@
-# 👗 ZaraStyle — Enterprise Fashion Inventory & Supply Logistics
+# ZaraStyle — Enterprise Fashion Inventory & Supply Logistics
 
 ![Java](https://img.shields.io/badge/Java-17%20LTS-orange?logo=openjdk)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.3.5-brightgreen?logo=springboot)
@@ -11,7 +11,7 @@ An enterprise-grade **Fashion Retail & Supply Chain Logistics Web Application** 
 
 ---
 
-## 🌟 Core Zara Retail Features Implemented
+##  Core Zara Retail Features Implemented
 
 * **Size Matrix Inventory (XS, S, M, L, XL):** Real-time stock counts tracked independently per garment, per size variant, and per store branch.
 * **Dual-Zone Stock Tracking:** Segregating inventory on the **Sales Floor** vs. **Backroom Stock Storage**.
@@ -26,7 +26,7 @@ An enterprise-grade **Fashion Retail & Supply Chain Logistics Web Application** 
 
 ---
 
-## 🏗️ Multi-Tier QA Testing Architecture
+## Multi-Tier QA Testing Architecture
 
 ```text
        /\
@@ -63,7 +63,7 @@ An enterprise-grade **Fashion Retail & Supply Chain Logistics Web Application** 
 
 ---
 
-## 🐱 Running on Apache Tomcat (Localhost)
+##  Running on Apache Tomcat (Localhost)
 
 ### Option A: Run Embedded Tomcat (1-Click)
 ```powershell
@@ -98,7 +98,7 @@ Open your browser at:
 
 ---
 
-## 🧪 Execute the Automated Test Suite
+##  Execute the Automated Test Suite
 
 ### Run Unit & Integration Tests (14 Tests)
 ```powershell
@@ -118,4 +118,4 @@ npx playwright test
 
 * **QA & SDET Engineer:** Samir Boussada
 * **GitHub Profile:** [@samir-boussada](https://github.com/samir-boussada)
-* **LinkedIn:** [Your LinkedIn URL]
+* **LinkedIn:** []
