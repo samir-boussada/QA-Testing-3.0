@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZARA STYLE — Stock Replenishment & Transfers</title>
+    <link rel="stylesheet" href="/css/zara.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; font-size: 0.85rem; }
+        th, td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-color); text-align: left; }
+        th { background: var(--gray-100); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.1em; }
+    </style>
+</head>
+<body>
+
+    <header class="zara-nav">
+        <div>
+            <a href="/" class="zara-logo">ZARA</a>
+            <span class="zara-sublogo">Inventory & Supply Logistics</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Store Inventory</a>
+            <a href="/transfers.html" class="nav-link active">Stock Transfers</a>
+        </div>
+    </header>
+
+    <main class="catalog-container">
+        <div class="catalog-title">
+            <span>CENTRAL LOGISTICS & STORE REPLENISHMENT DISPATCH</span>
+            <button class="btn-zara" onclick="openModal('new-transfer-modal')">+ REQUEST STOCK TRANSFER</button>
+        </div>
+
+        <div style="background: #fff; border: 1px solid var(--black); padding: 1.5rem;">
+            <h3>Active & Historical Inter-Store Stock Shipments</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transfer Ref</th>
+                        <th>Garment</th>
+                        <th>Size</th>
+                        <th>Origin Dispatch</th>
+                        <th>Destination Store</th>
+                        <th>Units</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="transfers-tbody">
+                    <tr><td colspan="8" style="text-align: center;">Loading transfer logs...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Modal: Request New Transfer -->
+    <div class="zara-modal-overlay" id="new-transfer-modal">
+        <div class="zara-modal-card">
+            <div class="zara-modal-header">
+                <h2>Request Inter-Branch Transfer</h2>
+                <button onclick="closeModal('new-transfer-modal')" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <form onsubmit="submitNewTransfer(event)">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem;">Garment</label>
+                    <select id="trf-garment" style="width: 100%; padding: 0.6rem; border: 1px solid var(--black);">
+                        <option value="1">Tailored Double-Breasted Wool Blend Coat (ZARA-7941-BLK)</option>
+                        <option value="2">Satin Midi Dress with Draped Neckline (ZARA-4120-EMR)</option>
+                    </select>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem;">Size</label>
+                        <select id="trf-size" style="width: 100%; padding: 0.6rem; border: 1px solid var(--black);">
+                            <option value="XS">XS</option>
+                            <option value="S">S</option>
+                            <option value="M" selected>M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem;">Quantity</label>
+                        <input type="number" id="trf-qty" value="10" min="1" max="100" style="width: 100%; padding: 0.6rem; border: 1px solid var(--black);">
+                    </div>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem;">From Location (Source)</label>
+                    <select id="trf-from" style="width: 100%; padding: 0.6rem; border: 1px solid var(--black);">
+                        <option value="2">Arteixo Central Distribution Hub (Warehouse)</option>
+                        <option value="3">London Oxford St Store</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem;">To Location (Destination)</label>
+                    <select id="trf-to" style="width: 100%; padding: 0.6rem; border: 1px solid var(--black);">
+                        <option value="1">Paris Champs-Élysées Store</option>
+                        <option value="3">London Oxford St Store</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-zara" style="width: 100%;">DISPATCH TRANSFER REQUEST</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', loadTransfers);
+
+        async function loadTransfers() {
+            try {
+                const res = await fetch('/api/transfers');
+                if (!res.ok) {
+                    document.getElementById('transfers-tbody').innerHTML = 
+                        '<tr><td colspan="8" style="text-align: center; color: var(--accent-red); padding: 2rem;">Please authenticate as Store Manager (manager@zara.com) to access transfers.</td></tr>';
+                    return;
+                }
+                const transfers = await res.json();
+                document.getElementById('transfers-tbody').innerHTML = transfers.length === 0
+                    ? '<tr><td colspan="8" style="text-align: center; padding: 2rem;">No transfer shipments logged.</td></tr>'
+                    : transfers.map(t => `
+                        <tr>
+                            <td><strong style="font-family: monospace;">${t.transferRef}</strong></td>
+                            <td>${t.garment.name}</td>
+                            <td><strong>${t.size}</strong></td>
+                            <td>${t.fromBranch.name}</td>
+                            <td>${t.toBranch.name}</td>
+                            <td><strong>${t.quantity}</strong></td>
+                            <td>
+                                <span style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 0.2rem 0.5rem; background: ${t.status === 'COMPLETED' ? '#dcfce7' : '#fef9c3'}; color: ${t.status === 'COMPLETED' ? '#166534' : '#854d0e'};">
+                                    ${t.status}
+                                </span>
+                            </td>
+                            <td>
+                                ${t.status === 'PENDING' ? `<button onclick="completeTransfer(${t.id})" class="btn-zara" style="padding: 0.3rem 0.6rem; font-size: 0.65rem;">COMPLETE & RECEIVE</button>` : '✓ Received'}
+                            </td>
+                        </tr>
+                    `).join('');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function submitNewTransfer(e) {
+            e.preventDefault();
+            const payload = {
+                garmentId: parseInt(document.getElementById('trf-garment').value),
+                size: document.getElementById('trf-size').value,
+                quantity: parseInt(document.getElementById('trf-qty').value),
+                fromBranchId: parseInt(document.getElementById('trf-from').value),
+                toBranchId: parseInt(document.getElementById('trf-to').value)
+            };
+
+            const res = await fetch('/api/transfers/request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                closeModal('new-transfer-modal');
+                loadTransfers();
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Transfer failed');
+            }
+        }
+
+        async function completeTransfer(id) {
+            const res = await fetch(`/api/transfers/${id}/complete`, { method: 'POST' });
+            if (res.ok) loadTransfers();
+            else alert('Could not complete transfer');
+        }
+
+        function openModal(id) { document.getElementById(id).classList.add('open'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    </script>
+</body>
+</html>

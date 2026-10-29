@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZARA STYLE — Enterprise Store & Inventory Logistics</title>
+    <link rel="stylesheet" href="/css/zara.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="zara-nav">
+        <div>
+            <a href="/" class="zara-logo">ZARA</a>
+            <span class="zara-sublogo">Inventory & Supply Logistics</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link active">Store Inventory</a>
+            <a href="/transfers.html" class="nav-link">Stock Transfers</a>
+            <div id="user-nav-box" style="display: flex; align-items: center; gap: 1rem;">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </header>
+
+    <!-- RFID / Barcode Scanning Bar -->
+    <section class="scanner-banner">
+        <div>
+            <div style="font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; color: #a1a1aa;">
+                RFID Instant Scan Simulation
+            </div>
+            <div style="font-size: 0.85rem; color: #d4d4d8;">
+                Try sample barcode: <code>ZARA-7941-PAR-M</code> or <code>ZARA-4120-PAR-S</code>
+            </div>
+        </div>
+        <div class="scanner-input-group">
+            <input type="text" id="rfid-input" placeholder="Scan or enter RFID SKU barcode...">
+            <button class="btn-zara-white" onclick="performScan()">SCAN SKU</button>
+        </div>
+    </section>
+
+    <!-- Catalog View -->
+    <main class="catalog-container">
+        <div class="catalog-title">
+            <span>PARIS FLAGSHIP (CHAMPS-ÉLYSÉES) — LIVE STOCK MATRIX</span>
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--gray-600);">AUTUMN / WINTER 2026</span>
+        </div>
+
+        <div class="garments-grid" id="garments-grid">
+            <!-- Populated by JS -->
+        </div>
+    </main>
+
+    <!-- Modal: Stock Inspection & Floor Replenishment -->
+    <div class="zara-modal-overlay" id="stock-modal">
+        <div class="zara-modal-card">
+            <div class="zara-modal-header">
+                <h2>Stock Detail & Replenishment</h2>
+                <button onclick="closeModal('stock-modal')" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            
+            <div style="margin-bottom: 1.5rem; font-size: 0.9rem;">
+                <div style="margin-bottom: 0.4rem;"><strong>Garment Ref:</strong> <span id="stock-ref" style="font-family: monospace;"></span></div>
+                <div style="margin-bottom: 0.4rem;"><strong>Model Name:</strong> <span id="stock-name"></span></div>
+                <div style="margin-bottom: 0.4rem;"><strong>Size:</strong> <span id="stock-size" style="font-weight: 800;"></span></div>
+                <div style="margin-bottom: 0.4rem;"><strong>RFID SKU:</strong> <span id="stock-rfid" style="font-family: monospace;"></span></div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; background: var(--gray-100); padding: 1.25rem; margin-bottom: 1.5rem; text-align: center;">
+                <div>
+                    <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--gray-600);">Sales Floor Stock</div>
+                    <div id="stock-floor-qty" style="font-size: 1.8rem; font-weight: 800;">0</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--gray-600);">Backroom Storage</div>
+                    <div id="stock-back-qty" style="font-size: 1.8rem; font-weight: 800;">0</div>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--gray-200); padding-top: 1.25rem;">
+                <div style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.5rem;">Move Backroom Stock to Sales Floor</div>
+                <div style="display: flex; gap: 0.75rem;">
+                    <input type="number" id="replenish-qty" value="3" min="1" style="width: 80px; padding: 0.5rem; border: 1px solid var(--black);">
+                    <button class="btn-zara" style="flex: 1;" onclick="replenishFloor()">REPLENISH SALES FLOOR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Markdown Discount -->
+    <div class="zara-modal-overlay" id="markdown-modal">
+        <div class="zara-modal-card">
+            <div class="zara-modal-header">
+                <h2>Seasonal Markdown Discount</h2>
+                <button onclick="closeModal('markdown-modal')" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <form onsubmit="submitMarkdown(event)">
+                <div style="margin-bottom: 1rem; font-size: 0.9rem;">
+                    <div><strong>Garment:</strong> <span id="md-garment-name"></span></div>
+                    <div><strong>Original Price:</strong> <span id="md-base-price"></span></div>
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.4rem;">Discount Percentage (%)</label>
+                    <select id="markdown-percentage" style="width: 100%; padding: 0.6rem; border: 1px solid var(--black);">
+                        <option value="15">15% Seasonal Markdown</option>
+                        <option value="20" selected>20% Mid-Season Sale</option>
+                        <option value="30">30% Clearance</option>
+                        <option value="50">50% Final Reductions</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-zara" style="width: 100%;">APPLY MARKDOWN</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Staff Login -->
+    <div class="zara-modal-overlay" id="login-modal">
+        <div class="zara-modal-card">
+            <div class="zara-modal-header">
+                <h2>Staff Authentication</h2>
+                <button onclick="closeModal('login-modal')" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            <form onsubmit="submitLogin(event)">
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem;">Staff Email</label>
+                    <input type="email" id="login-email" required placeholder="manager@zara.com" style="width: 100%; padding: 0.6rem; border: 1px solid var(--black);">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.75rem; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem;">Password</label>
+                    <input type="password" id="login-password" required placeholder="••••••••" style="width: 100%; padding: 0.6rem; border: 1px solid var(--black);">
+                </div>
+                <button type="submit" class="btn-zara" style="width: 100%;">AUTHENTICATE</button>
+            </form>
+            <div style="margin-top: 1rem; font-size: 0.75rem; color: var(--gray-600); line-height: 1.6;">
+                Demo Credentials:<br>
+                Manager: <code>manager@zara.com</code> / <code>ZaraManager123!</code><br>
+                Floor Staff: <code>associate@zara.com</code> / <code>ZaraStaff123!</code>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/zara-app.js"></script>
+</body>
+</html>

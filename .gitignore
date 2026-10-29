@@ -1,0 +1,22 @@
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### IDE ###
+.idea
+*.iws
+*.iml
+*.ipr
+.vscode/
+
+### Node / Playwright ###
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+### OS ###
+.DS_Store
+Thumbs.db
