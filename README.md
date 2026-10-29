@@ -118,4 +118,4 @@ npx playwright test
 
 * **QA & SDET Engineer:** Samir Boussada
 * **GitHub Profile:** [@samir-boussada](https://github.com/samir-boussada)
-* **LinkedIn:** []
+* **LinkedIn:** [Https://www.linkedin.com/in/samir-boussada-5bba06113]
