@@ -132,7 +132,7 @@ erDiagram
 
 ##  Running on Apache Tomcat (Localhost)
 
-### Option A: Run Embedded Tomcat (1-Click)
+### Option A: Run Embedded Tomcat 
 ```powershell
 cd zara-fashion-inventory
 mvn spring-boot:run
