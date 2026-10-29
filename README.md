@@ -26,6 +26,73 @@ An enterprise-grade **Fashion Retail & Supply Chain Logistics Web Application** 
 
 ---
 
+## Database Architecture & Entity Relationships
+
+The application uses a normalized MySQL database structure:
+
+```mermaid
+erDiagram
+    STORE_BRANCHES {
+        bigint id PK
+        string branch_code UK
+        string name
+        string city
+        boolean is_warehouse
+    }
+
+    STAFF_USERS {
+        bigint id PK
+        string email UK
+        string full_name
+        string password
+        enum role "ROLE_ASSOCIATE | ROLE_MANAGER | ROLE_LOGISTICS"
+        bigint branch_id FK
+        timestamp created_at
+    }
+
+    GARMENTS {
+        bigint id PK
+        string ref_code UK
+        string name
+        string composition
+        string season
+        decimal base_price
+        decimal discounted_price
+        enum category "OUTERWEAR | DRESSES | KNITWEAR | SHIRTS"
+        string image_url
+    }
+
+    GARMENT_STOCKS {
+        bigint id PK
+        bigint garment_id FK
+        bigint branch_id FK
+        enum size "XS | S | M | L | XL"
+        int floor_stock
+        int backroom_stock
+        string rfid_barcode UK
+    }
+
+    STOCK_TRANSFERS {
+        bigint id PK
+        string transfer_ref UK
+        bigint garment_id FK
+        enum size "XS | S | M | L | XL"
+        bigint from_branch_id FK
+        bigint to_branch_id FK
+        int quantity
+        enum status "PENDING | IN_TRANSIT | COMPLETED"
+        timestamp requested_date
+    }
+
+    STORE_BRANCHES ||--o{ STAFF_USERS : "employs"
+    GARMENTS ||--|{ GARMENT_STOCKS : "has size variants"
+    STORE_BRANCHES ||--|{ GARMENT_STOCKS : "stores"
+    GARMENTS ||--o{ STOCK_TRANSFERS : "transferred"
+    STORE_BRANCHES ||--o{ STOCK_TRANSFERS : "originates / receives"
+```
+
+---
+
 ## Multi-Tier QA Testing Architecture
 
 ```text
